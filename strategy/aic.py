@@ -304,6 +304,8 @@ class Loop(Chain):
                 self.purge_hints(plan, intersect, set([hint]), reason, "off-chain")
                 status = True
 
+        return status
+
     """
     Recusive AIC walk. It looks for and constructs all AIC's starting
     from the head and following cycle path to the next link.
