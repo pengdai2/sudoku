@@ -109,6 +109,7 @@ def process_snap(snap, i, html = True):
 
     # Separator.
     add_separator()
+    add_pagebreak()
 
 def create_board(sudoku, i = None):
     src = [
@@ -387,6 +388,9 @@ def add_comment(c):
 def add_separator():
     print "<hr/>"
 
+def add_pagebreak():
+    print "<p style=\"page-break-after:always;\"></p>"
+
 def start_script():
     print "<script>"
 
@@ -430,6 +434,7 @@ def generate_html(sudoku, out):
     show_title()
     show_input(sudoku)
     add_separator()
+    add_pagebreak()
     parse_output(out)
     end_body()
     end_html()
