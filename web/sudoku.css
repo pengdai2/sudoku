@@ -1,0 +1,134 @@
+/* top level sudoku container (div) */
+.sudoku {
+    position: relative;
+    width: 450px;
+    height: 450px;
+}
+
+/* child frame in soduku container */
+.frame {
+    width: 100%;
+    height: 100%;
+}
+
+/* canvas overlay frame (for graphics) */
+.canvas {
+    position: absolute;
+    z-index: 10;
+}
+
+/* board frame (for table) */
+.table {
+    position: absolute;
+    z-index: 5;
+}
+
+/* Sudoku board borderless */
+.board {
+    table-layout: fixed;
+}
+
+/* outer table cell containg Sudoku box */
+.outer {
+    font-family: verdana, arial, sans-serif;
+    font-size: 8pt;
+    background: #eeccbb;
+    border-bottom: 1px solid #bbbbbb;
+    border-top: 1px solid #bbbbbb;
+    border-left: 1px solid #bbbbbb;
+    border-right: 1px solid #bbbbbb;
+    width: 140px;
+    height: 140px;
+}
+
+/* Sudoku box borderless */
+.box {
+    table-layout: fixed;
+}
+
+/* inner table cell containing Sudoku node */
+.inner {
+    font-family: verdana, arial, sans-serif;
+    font-size: 12pt;
+/*    font-weight: bold; */
+    color: #0000ff;
+    border-bottom: 1px solid #888888;
+    border-top: 1px solid #888888;
+    border-left: 1px solid #888888;
+    border-right: 1px solid #888888;
+    width: 44px;
+    height: 44px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* hints table borderless */
+.hints {
+    border-spacing: 0px;
+    empty-cells: show;
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 40px;
+    height: 40px;
+}
+
+/* hints table cell borderless */
+.hint {
+    text-align: center;
+    padding: 0 0 0 0;
+    font-family: verdana;
+    font-size: 8pt;
+    font-weight: normal;
+    font-style: italic;
+    color: #bbbb00;
+    width: 12px;
+    height: 11px;
+}
+
+.node_border_high_action {
+    border: 2px solid #ff0000;
+}
+
+.node_fill_high_action {
+    background: #ffffff;
+}
+
+.hint_border_high_action {
+    border: 2px solid #000000;
+}
+
+.hint_fill_high_action {
+    background: #ffff00;
+}
+
+.node_border_high_reason {
+    border: 2px solid #ffff00;
+}
+
+.node_fill_high_reason {
+    background: #ffffff;
+}
+
+.hint_border_high_reason {
+    border: 2px solid #000000;
+}
+
+.hint_fill_high_reason {
+    background: #00ffff;
+}
+
+.node_border_high_reason_2 {
+    border: 2px solid #448800;
+}
+
+.node_fill_high_reason_2 {
+    background: #ffffff;
+}
+
+.hint_border_high_reason_2 {
+    border: 2px solid #000000;
+}
+
+.hint_fill_high_reason_2 {
+    background: #00ff00;
+}

@@ -1,0 +1,94 @@
+1. strategy refactoring
+
+status: done
+description: move all solution logic out of Sudoku to specific classes
+motivation: to simplify strategy update
+tasks: all strategies including trial based
+
+2. Playbook
+
+status: done
+description: a collection of strategies
+motivation: better strategy plugin
+tasks: 
+
+3. Plan
+
+status: done
+description: derive a Plan (of attack) from the Playbook with the given Options
+plan includes a collection of strategies to deploy toward the solution
+strategy execution observes level based priority and restart from lower ones
+execution stats support
+motivation: separate meta execution from strategy specifics
+tasks:
+
+4. general refactoring
+
+status: done
+description: modularization
+motivation: simplified maintenance
+tasks: modularization and dependency delineation
+
+5. hook support
+
+status: done
+description: allows callout at specific points during strategy execution
+motivations:
+  - step-wise execution (pause before / after)
+  - checkpoint / rollback
+  - record / replay
+tasks:
+
+6. AIC rework
+
+status: done
+description: AIC based algorithms cleanup
+motivation: correctness and generalizability
+tasks:
+  - aic correctness
+  - aic data structure
+  - group x-cycle and aic reconciliation
+  - group AIC
+
+7. ForcingChain
+
+status: done except harder ones
+description: various forcing chain based strategies
+motivation: more strategies
+tasks:
+  - read about FC
+  - reconcile with AIC (refactoring common chaining support)
+  - pick ones relative easy to implement (digit, nishio)
+  - harder ones (cell, unit)
+
+8. other algorithms
+
+status: not started
+description: more exotic algorithms
+motivation: completeness
+tasks:
+  - ALS
+  - empty rectangle
+  - sue-de-coq
+  - death blossom
+  - POM
+
+8. UI
+
+status: done
+description: improved user interface
+motivation: a more user friendy experience esp. with hints
+tasks:
+  - web based application architecture choices
+    - php for server side scripting to hook up with python
+    - html content
+    - css styling
+    - java script for client side
+    - html canvas graphics
+  - javascript for rendering a sudoku instance
+  - php for generating javascript rendering code after each step
+  - snap hook to output instance snapshot
+  - js rendering sudoku grid coordinates
+  - update event output in json format
+  - python event parser and js generator
+  - options checkbox
