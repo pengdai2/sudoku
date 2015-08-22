@@ -57,7 +57,7 @@ class APE(AlmostLockedSet):
             if not als:
                 hints.add(candidate)
             else:
-                excl.append((candidate, sorted(als)))
+                excl.append((candidate, als))
 
         nhints = set([h for h, o in hints])
         ohints = set([o for h, o in hints])

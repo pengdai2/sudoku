@@ -21,14 +21,15 @@ class AlmostLockedSet(Strategy):
     Multiple ALS's may share common hints. A restricted common hint
     refers to one where all instances of the hint across all ALS's
     involved can see each other. Hence, a restricted common hint
-    must be exclusive to one ALS only.
+    must be exclusive to one ALS only. Two ALS's sharing a restricted
+    common hint are strongly or exclusively linked.
 
     Conversely, instances of an unrestricted common hint may not all
     see each other; as a result, it may be taken in more than one ALS.
 
     The basic concept of ALS is widely applied in a number of Sudoku
     strategies, such as Y-WING, XYZ-WING, WXYZ-WING, ALS, APE, Death
-    Blossom, which justifies the existence of the common base.
+    Blossom, which justifies the existence of this common base.
     """
     def __init__(self, name):
         Strategy.__init__(self, name)
@@ -66,27 +67,20 @@ class AlmostLockedSet(Strategy):
         lens = sizes if sizes else [x + 1 for x in range(len(nodes))]
         for i in lens:
             for als in itertools.combinations(nodes, i):
-                if self.als_is_formed(als, related):
+                if self.als_formed(als, related):
                     alsets.add(frozenset(als))
         return alsets
 
     """
     Return True if the given nodes form an ALS.
     """
-    def als_is_formed(self, nodes, related = False):
+    def als_formed(self, nodes, related = False):
         hints = self.als_all_hints(nodes)
         if len(hints) != len(nodes) + 1:
             return False
         if related:
             return True
         return all([x.is_related(y) for x in nodes for y in nodes if y != x])
-
-    """
-    Return the set of nodes that can see all instances of the given
-    hint in the ALS.
-    """
-    def als_related(self, als, hint):
-        return self.join_related([x for x in als if x.has_hint(hint)])
 
     """
     Return the restricted and unrestricted common hints between the
@@ -106,3 +100,25 @@ class AlmostLockedSet(Strategy):
 
         return (rcs, intersect - rcs)
 
+    """
+    Return True if the two ALS's are exclusively linked, i.e., sharing
+    a restricted common hint.
+    """
+    def als_linked(self, als1, als2):
+        rcs, ucs = self.als_urc_hints(als1, als2)
+        return bool(rcs)
+
+    """
+    Return the set of nodes that can see all instances of the given
+    hint in the ALS.
+    """
+    def als_related(self, als, hint):
+        return self.join_related([x for x in als if x.has_hint(hint)])
+
+    """
+    Return the hinge that comprises nodes that can see all other nodes.
+    """
+    def als_hinge(self, als1, als2):
+        hinge1 = set([x for x in als1 if all([x.is_related(y) for y in als2])])
+        hinge2 = set([x for x in als2 if all([x.is_related(y) for y in als1])])
+        return hinge1 | hinge2

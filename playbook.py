@@ -30,6 +30,12 @@ class SudokuEncoder(json.JSONEncoder):
         if isinstance(obj, Optional):
             return str(obj)
 
+        # The default JSON encoder doesn't support set based types.
+        # Convert to list which is considered a serializable type.
+        if isinstance(obj, set) or isinstance(obj, frozenset):
+            return sorted(obj)
+
+        # Raise type error as a catchall.
         return json.JSONEncoder.default(self, obj)
 
     """
@@ -435,7 +441,7 @@ class Strategy(Optional):
                 action = {
                     "node": node,
                     "remove": True,
-                    "hints": sorted(hints),
+                    "hints": hints,
                     "note": note
                     };
                 if self.update_node(plan, node, node.get_hints() - hints, action, reason):
@@ -478,7 +484,7 @@ class Strategy(Optional):
             action = {
                 "node": node,
                 "remove": False,
-                "hints": sorted(hints),
+                "hints": hints,
                 "note": None
                 };
             return self.update_node(plan, node, hints, action)

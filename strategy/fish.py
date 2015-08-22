@@ -35,7 +35,7 @@ class FishBase(Strategy):
     Dump diagnostic info on the fish pattern identified.
     """
     def fish_info(self, plots, slots, hints, fin = None):
-        reason = {"hints": sorted(hints), "plots": [], "fin": None}
+        reason = {"hints": hints, "plots": [], "fin": None}
         for plot in plots:
             pnodes = self.fish_nodes_ordered(plot, slots)
             reason["plots"].append({"plot": plot, "nodes": list(pnodes)})

@@ -36,7 +36,7 @@ class UniqueRectangle(Strategy):
     unique rectangle, where a floor and roof are available.
     """
     def unique_rectangle_process(self, plan, floor, roof, hints):
-        reason = {"hints": sorted(hints), "floor": floor, "roof": roof}
+        reason = {"hints": hints, "floor": floor, "roof": roof}
 
         fl, fr = floor
         rl, rr = roof
@@ -89,7 +89,7 @@ class UniqueRectangle(Strategy):
             return False
 
         # Hidden Type 1.
-        reason = {"hints": sorted(hints), "floor": main, "roof": pair}
+        reason = {"hints": hints, "floor": main, "roof": pair}
         return self.purge_hints(plan, [diagonal], hints - excl, reason, "hidden 1")
 
     """

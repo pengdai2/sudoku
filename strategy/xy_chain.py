@@ -66,7 +66,7 @@ class XYChain(Strategy):
             overlap -= set(pair)
 
             if self.test_purge(overlap, z):
-                reason = {"hint": sorted(z), "xz": chain[0], "yz": chain[-1], "chain": chain[1:]}
+                reason = {"hint": z, "xz": chain[0], "yz": chain[-1], "chain": chain[1:]}
                 self.purge_hints(plan, overlap, z, reason)
                 status = True
 

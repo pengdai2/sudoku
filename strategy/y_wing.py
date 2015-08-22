@@ -49,7 +49,7 @@ class YWing(Strategy):
             overlap -= set(candidate)
 
             if self.test_purge(overlap, z):
-                reason = {"hint": sorted(z), "xy": xy, "xz": xz, "yz": yz}
+                reason = {"hint": z, "xy": xy, "xz": xz, "yz": yz}
                 self.purge_hints(plan, overlap, z, reason)
                 return True
 

@@ -71,7 +71,7 @@ class HiddenGroup(Strategy):
 
         for hints, group in self.find_hidden_groups(lot):
             if self.test_update(group, hints):
-                reason = {"hints": sorted(hints), "group": list(group)}
+                reason = {"hints": hints, "group": group}
                 self.update_hints(plan, group, hints, reason)
                 status = True
 

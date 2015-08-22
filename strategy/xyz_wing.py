@@ -46,7 +46,7 @@ class XYZWing(Strategy):
         overlap -= set(pair)
 
         if self.test_purge(overlap, z):
-            reason = {"hint": sorted(z), "xyz": xyz, "xz": xz, "yz": yz}
+            reason = {"hint": z, "xyz": xyz, "xz": xz, "yz": yz}
             self.purge_hints(plan, overlap, z, reason)
             return True
 

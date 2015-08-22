@@ -72,7 +72,7 @@ class NakedGroup(Strategy):
         for hints, group in self.find_naked_groups(lot):
             nodes = lot.other_nodes(group)
             if self.test_purge(nodes, hints):
-                reason = {"hints": sorted(hints), "group": list(group)}
+                reason = {"hints": hints, "group": group}
                 self.purge_hints(plan, nodes, hints, reason)
                 status = True
 

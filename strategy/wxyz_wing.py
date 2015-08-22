@@ -38,13 +38,9 @@ class WXYZWing(AlmostLockedSet):
         if len(ucs) != 1 or len(rcs) != 1:
             return False
 
-        # Hinge comprises nodes that can see all other nodes.
-        # The rest of the nodes are referred to as wing or
-        # pincers.
-        hinge = set([x for x in als3 if all([x.is_related(y) for y in als1])])
+        hinge = self.als_hinge(als1, als3)
         wing = (als1 | als3) - hinge
-        reason = {"hint": sorted(ucs), "hinge": sorted(hinge),
-                  "wing": sorted(wing)}
+        reason = {"hint": ucs, "hinge": hinge, "wing": wing}
 
         hint = ucs.pop()
         ucs.add(hint)

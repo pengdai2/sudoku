@@ -43,7 +43,7 @@ class Intersection(Strategy):
             box = nodes[0].get_box()
             others = box.other_nodes(nodes)
             if self.test_purge(others, hints):
-                reason = {"hints": sorted(hints), "lots": [lot, box], "nodes": nodes}
+                reason = {"hints": hints, "lots": [lot, box], "nodes": nodes}
                 self.purge_hints(plan, others, hints, reason)
                 status = True
         return status
@@ -64,7 +64,7 @@ class Intersection(Strategy):
             row = nodes[0].get_row()
             others = row.other_nodes(nodes)
             if self.test_purge(others, hints):
-                reason = {"hints": sorted(hints), "lots": [lot, row], "nodes": nodes}
+                reason = {"hints": hints, "lots": [lot, row], "nodes": nodes}
                 self.purge_hints(plan, others, hints, reason)
                 status = True
 
@@ -78,7 +78,7 @@ class Intersection(Strategy):
             col = nodes[0].get_col()
             others = col.other_nodes(nodes)
             if self.test_purge(others, hints):
-                reason = {"hints": sorted(hints), "lots": [lot, col], "nodes": nodes}
+                reason = {"hints": hints, "lots": [lot, col], "nodes": nodes}
                 self.purge_hints(plan, others, hints, reason)
                 status = True
 

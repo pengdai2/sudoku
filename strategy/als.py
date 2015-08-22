@@ -35,10 +35,6 @@ class ALS(AlmostLockedSet):
     def als(self, plan, als1, als2):
         status = False
 
-        # Make sure the two ALS's are not overlapping.
-        if als1 & als2:
-            return status
-
         # Make sure there exists at least one restricted common hint.
         rcs, ucs = self.als_urc_hints(als1, als2)
         if not rcs:
@@ -46,7 +42,7 @@ class ALS(AlmostLockedSet):
 
         # Remove conflicting instances of any non-restricted
         # common hints.
-        reason = {"als1": sorted(als1), "als2": sorted(als2), "rcs": sorted(rcs)}
+        reason = {"als1": als1, "als2": als2, "rcs": rcs}
         for hint in ucs:
             overlap = self.als_related(als1, hint) & self.als_related(als2, hint)
             if self.test_purge(overlap, set([hint])):
@@ -63,6 +59,8 @@ class ALS(AlmostLockedSet):
         alsets = self.als_find_in_lots(plan.get_sudoku().get_lots())
         for als1, als2 in itertools.combinations(alsets, 2):
             if any([x.is_complete() for x in als1 | als2]):
+                continue
+            if als1 & als2:
                 continue
             if self.als(plan, als1, als2):
                 status = True
