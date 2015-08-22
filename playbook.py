@@ -59,31 +59,31 @@ class Options(object):
         "HIDDEN-GROUP" : 1,
         # Level 2
         "X-WING" : 2,
-        "SIMPLE-COLORING" : 2,
-        "XYZ-WING" : 2,
         "Y-WING" : 2,
+        "XYZ-WING" : 2,
+        "SIMPLE-COLORING" : 2,
         # Level >= 10
         "X-CYCLE" : 10,
         "XY-CHAIN" : 11,
         "3D-MEDUSA" : 12,
         "SWORD-FISH" : 13,
-        "ALS" : 14,
+        "WXYZ-WING" : 14,
         # Level >= 20
         "GROUPED-X-CYCLE" : 20,
         "UNIQUE-RECTANGLE" : 21,
-        "WXYZ-WING" : 22,
         # Level >= 30
-        "APE" : 30,
-        "JELLY-FISH" : 31,
+        "ALS" : 30,
+        "APE" : 31,
         # Level >= 40
         "FINNED X-WING" : 40,
         "FINNED SWORD-FISH" : 41,
-        "AIC" : 42,
         # Level >= 50
-        "DIGIT FORCING-CHAIN" : 50,
-        "NISHIO FORCING-CHAIN" : 51,
+        "AIC" : 50,
+        "DIGIT FORCING-CHAIN" : 51,
+        "NISHIO FORCING-CHAIN" : 52,
         # Level >= 60
         "GROUPED-AIC" : 60,
+        "JELLY-FISH" : 61,
         # Level > 90
         "TRIAL-1" : 97,
         "TRIAL-2" : 98,

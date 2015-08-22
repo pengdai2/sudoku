@@ -172,11 +172,11 @@ def xyz_wing(reason):
 def wxyz_wing(reason):
     add_comment("ST.WXYZ-WING")
     hint = reason["hint"]
-    hinges = reason["hinges"]
+    hinge = reason["hinge"]
     wing = reason["wing"]
     for node in wing:
         highlight_hints(node, hint, "reason")
-    for node in hinges:
+    for node in hinge:
         highlight_hints(node, hint, "reason_2");
 
 def xy_chain(reason):
@@ -292,7 +292,7 @@ def unique_rectangle(reason):
 
 def als(reason):
     add_comment("ST.ALS")
-    hints = reason["restricted"]
+    hints = reason["rcs"]
     als1 = reason["als1"]
     als2 = reason["als2"]
 

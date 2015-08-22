@@ -6,8 +6,9 @@ import itertools
 from logger import *
 from playbook import *
 from sudoku import *
+from almost_locked_set import *
 
-class APE(Strategy):
+class APE(AlmostLockedSet):
 
     __metaclass__ = StrategyMeta
 
@@ -16,51 +17,32 @@ class APE(Strategy):
     that can see each other CANNOT duplicate the contents of any Almost
     Locked Set they both entirely see and share hints with.
 
-    Almost Locked Set, or ALS, is formed when
-
-      1) # of hints in the set is one over # of nodes
-      2) nodes in the set can see each other
-
     The strategy works by enumerating all combinations of hints among the
     pair of nodes and then eliminate some via conflict with ALS.
     """
     def __init__(self):
-        Strategy.__init__(self, "APE")
+        AlmostLockedSet.__init__(self, "APE")
 
     """
-    Check if an Almost Locking Set, or ALS, is formed among the nodes.
+    Check if the given pair of hints, one for each node in the aligned pair,
+    can be eliminated by an ALS.
     """
-    def ape_als_formed(self, nodes, hints):
-        if len(hints) > len(nodes) + 1:
-            return False
-        return all([x.is_related(y) for x in nodes for y in nodes if y != x])
-
-    """
-    Check if the given pair of hints, one from each node in the APE, can be
-    eliminated via an ALS in the overlap are visible to both nodes.
-    """
-    def ape_exclude(self, pair, overlap):
-        for i in range(len(overlap)):
-            for nodes in itertools.combinations(overlap, i + 1):
-                hints = set.union(*[x.get_hints() for x in nodes])
-                if not self.ape_als_formed(nodes, hints):
-                    continue
-                # Check if the pair consumes two hints of the ALS
-                if hints >= set(pair):
-                    return nodes
+    def ape_exclude(self, alsets, hints):
+        for als in alsets:
+            if hints <= self.als_all_hints(als):
+                return als
         return None
-    
+
     """
     Exclude hints from the given pair of nodes.
     """
     def ape(self, plan, pair):
         node, other = pair
-        if node.is_complete() or other.is_complete():
-            return False
 
-        overlap = set([x for x in node.find_related() & other.find_related()
-                       if not x.is_complete() and not x in pair])
-        if not overlap:
+        # Look for ALS's among those both nodes in the pair can see.
+        overlap = [x for x in node.find_related() & other.find_related() if not x in pair]
+        alsets = self.als_find_in_nodes(overlap)
+        if not alsets:
             return False
 
         hints = set()
@@ -71,11 +53,11 @@ class APE(Strategy):
                 if not node.is_related(other):
                     hints.add(candidate)
                 continue
-            als = self.ape_exclude(candidate, overlap)
+            als = self.ape_exclude(alsets, set(candidate))
             if not als:
                 hints.add(candidate)
             else:
-                excl.append((candidate, als))
+                excl.append((candidate, sorted(als)))
 
         nhints = set([h for h, o in hints])
         ohints = set([o for h, o in hints])
@@ -88,9 +70,14 @@ class APE(Strategy):
         return False
 
     """
-    Look for and process APE pairs across all nodes with the required
-    hints.
+    Look for and process APE pairs across all nodes.
     """
     def run(self, plan):
-        return any([self.ape(plan, pair)
-                    for pair in itertools.combinations(plan.get_sudoku().get_incomplete(), 2)])
+        status = False
+        nodes = plan.get_sudoku().get_incomplete()
+        for pair in itertools.combinations(nodes, 2):
+            if any([x.is_complete() for x in pair]):
+                continue
+            if self.ape(plan, pair):
+                status = True
+        return status
