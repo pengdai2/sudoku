@@ -90,6 +90,8 @@ class Options(object):
         # Level >= 60
         "GROUPED-AIC" : 60,
         "JELLY-FISH" : 61,
+        # Level >= 80
+        "DEATH-BLOSSOM": 80,
         # Level > 90
         "TRIAL-1" : 97,
         "TRIAL-2" : 98,

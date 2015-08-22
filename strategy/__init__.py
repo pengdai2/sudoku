@@ -14,5 +14,6 @@ __all__ = [
     "xyz_wing",
     "y_wing",
     "forcing_chain",
-    "als"
+    "als",
+    "death_blossom"
     ]
