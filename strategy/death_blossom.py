@@ -13,68 +13,62 @@ class DeathBlossom(AlmostLockedSet):
     __metaclass__ = StrategyMeta
 
     """
-    Death Blossom is another variation of the Almost Locked Set based
-    strategies. For this strategy to work, it requires three ALS's, A,
-    B, and C, that can "see" each other. Specifically, there must exist
-    a restricted common hint (X) between A and B; and one (Y) between
+    Death Blossom is yet another variation of the strategies based on the
+    Almost Locked Set concept.
+
+    For this strategy to work, it requires a total of three ALS's, A, B,
+    and C, that can "see" each other. Specifically, there must exist a
+    restricted common hint (X) between A and B; and one (Y) between
     A and C; and an unrestricted common hint (Z) between B and C.
 
     The strategy eliminates all occurrences of hint Z outside of the
     two ALS's, B and C, but can see all instances of Z in both ALS's.
 
     It differs from ALS in that the two ALS's, B and C, are not directly
-    linked to each other. Instead, they are linked via the "stem" ALS A
-    with B and C forming petals around it. Hence, the name Death Blossom.
+    linked to each other. Instead, they are linked via the "stem" A, with
+    B and C forming petals around A. Hence, the name Death Blossom.
 
-    In a way, it is analagous to XY-WING, where node XY is the stem and
-    node XZ and YZ are the petals, except that the parts that make Death
-    Blossom are ALS's not nodes.
+    It is analagous to XY-WING, where one may consider node XY as the
+    stem whereas node XZ and YZ are the petals, except that the parts
+    that make Death Blossom are ALS's not nodes.
 
-    Given the third dimension, Death Blossom can be orders of magnitude
-    more expensive than plain ALS. Hence, an artificial limit on the
-    size of the stem is put in place to cap the cost.
+    Given the added dimension from a third ALS, Death Blossom can be
+    orders of magnitude more expensive than plain ALS. To cap the cost,
+    an artificial limit is placed on the size of the stem and petals.
     """
-    def __init__(self, stem_limit = 1):
+    def __init__(self, stem_limit = 1, petal_limit = 4):
         AlmostLockedSet.__init__(self, "DEATH-BLOSSOM")
         self.stem_limit = stem_limit
+        self.petal_limit = petal_limit
 
     """
     Find the stem in the Death Blossom.
     """
-    def death_blossom_stem(self, alsets):
-        for stem in alsets:
-            if len(stem) > self.stem_limit:
-                continue
-            petal1, petal2 = list(alsets - set([stem]))
-            x, ucs = self.als_urc_hints(petal1, petal2)
-            if x or not ucs:
-                continue
-            rcs1, x = self.als_urc_hints(stem, petal1)
-            rcs2, x = self.als_urc_hints(stem, petal2)
-            if not rcs1 or not rcs2:
-                continue
-            rcs = rcs1 | rcs2
-            if len(rcs) < 2:
-                continue
-            ucs -= rcs
-            return (stem, rcs, ucs)
-        return (None, None, None)
+    def death_blossom_verify(self, stem, petal1, petal2):
+        x, ucs = self.als_urc_hints(petal1, petal2)
+        if x or not ucs:
+            return None
+        rcs1, x = self.als_urc_hints(stem, petal1)
+        rcs2, x = self.als_urc_hints(stem, petal2)
+        if not rcs1 or not rcs2:
+            return None
+        rcs = rcs1 | rcs2
+        if len(rcs) < 2:
+            return None
+        ucs -= rcs
+        return (rcs, ucs)
 
     """
     Verify and process the death blossom pattern.
     """
-    def death_blossom(self, plan, alsets):
+    def death_blossom(self, plan, stem, petal1, petal2):
         status = False
 
-        stem, rcs, ucs = self.death_blossom_stem(alsets)
-        if not stem:
+        hsets = self.death_blossom_verify(stem, petal1, petal2)
+        if not hsets:
             return status
-        alsets.remove(stem)
-        petal1 = alsets.pop()
-        petal2 = alsets.pop()
+        rcs, ucs = hsets
 
-        # Remove conflicting instances of any non-restricted
-        # common hints.
         reason = {"stem": stem, "petal1": petal1, "petal2": petal2,
                   "rcs": rcs, "ucs": ucs}
         for hint in ucs:
@@ -89,12 +83,15 @@ class DeathBlossom(AlmostLockedSet):
     Death Blossom strategy.
     """
     def run(self, plan):
-        alsets = self.als_find_in_lots(plan.get_sudoku().get_lots())
-        for als1, als2, als3 in itertools.combinations(alsets, 3):
-            if any([x.is_complete() for x in als1 | als2 | als3]):
-                continue
-            if als1 & als2 or als1 & als3 or als2 & als3:
-                continue
-            if self.death_blossom(plan, set([als1, als2, als3])):
-                return True
+        lots = plan.get_sudoku().get_lots()
+
+        stems = self.als_find_in_lots(lots, range(1, self.stem_limit + 1))
+        petals = self.als_find_in_lots(lots, range(1, self.petal_limit + 1))
+
+        for stem in stems:
+            for petal1, petal2 in itertools.combinations(petals, 2):
+                if stem & petal1 or stem & petal2 or petal1 & petal2:
+                    continue
+                if self.death_blossom(plan, stem, petal1, petal2):
+                    return True
         return False
