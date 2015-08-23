@@ -38,7 +38,7 @@ class AlmostLockedSet(Strategy):
     Return the set of hints in the ALS.
     """
     def als_all_hints(self, als):
-        return set.union(*[x.get_hints() for x in als])
+        return set.union(*[x.get_hints() for x in als if not x.is_complete()])
 
     """
     Return the set of all unique ALS's in the given lots. If a list

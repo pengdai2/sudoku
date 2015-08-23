@@ -30,26 +30,77 @@ class ALS(AlmostLockedSet):
         AlmostLockedSet.__init__(self, "ALS")
 
     """
-    Process the pair of ALS's.
+    The canonical ALS scenario involves a single restricted common
+    hint (X) and one or more unrestricted common hints (Z) between
+    the two ALS's. All instances of Z elsewhere that can see all the
+    Z's within both ALS's can be eliminated.
     """
-    def als(self, plan, als1, als2):
+    def als_solo(self, plan, als1, als2, ucs, reason):
         status = False
-
-        # Make sure there exists at least one restricted common hint.
-        rcs, ucs = self.als_urc_hints(als1, als2)
-        if not rcs:
-            return status
-
-        # Remove conflicting instances of any non-restricted
-        # common hints.
-        reason = {"als1": als1, "als2": als2, "rcs": rcs}
         for hint in ucs:
             overlap = self.als_related(als1, hint) & self.als_related(als2, hint)
             if self.test_purge(overlap, set([hint])):
-                self.purge_hints(plan, overlap, set([hint]), reason)
+                self.purge_hints(plan, overlap, set([hint]), reason, "solo")
+                status = True
+        return status
+
+    """
+    A variation of the ALS scenario involves two restricted common
+    hints between the two ALS's. This case is unlikely but possible
+    and it leads to much more drastic actions. First, all hints
+    within each ALS except for the two restricted common hints must
+    be taken by the ALS. Hence, all instances of such hints elsewhere
+    that can see all the instances of the same hint within the ALS
+    can be eliminated. Secondly, the same rule applied in the solo
+    case can be applied in the dual case with Z extended to include
+    both unrestricted and restricted common hints.
+    """
+    def als_dual(self, plan, als1, als2, rcs, ucs, reason):
+        status = False
+
+        # Exclude any but the restricted common hints in each ALS.
+        for als in (als1, als2):
+            hints = self.als_all_hints(als) - rcs
+            for hint in hints:
+                nodes = self.als_related(als, hint)
+                if self.test_purge(nodes, set([hint])):
+                    self.purge_hints(plan, nodes, set([hint]), reason, "dual (excluded)")
+                    status = True
+
+        # Same solo rule except that we are not limited to just the
+        # unrestricted common hints.
+        for hint in rcs | ucs:
+            overlap = self.als_related(als1, hint) & self.als_related(als2, hint)
+            if self.test_purge(overlap, set([hint])):
+                self.purge_hints(plan, overlap, set([hint]), reason, "dual (unrestricted)")
                 status = True
 
         return status
+
+    """
+    Process the pair of ALS's.
+    """
+    def als(self, plan, als1, als2):
+        # Get the restricted and unrestricted common hints.
+        rcs, ucs = self.als_urc_hints(als1, als2)
+
+        # ALS requires at least one restricted common hint.
+        if not rcs:
+            return False
+
+        # Process the ALS pair differently depending on how many
+        # restricted common hints there exist. Note that it is
+        # impossible to have more than two restricted common hints
+        # between two ALS's or we'd end up with more nodes than
+        # there are hints.
+        reason = {"als1": als1, "als2": als2, "rcs": rcs}
+
+        if len(rcs) == 1:
+            return self.als_solo(plan, als1, als2, ucs, reason)
+        elif len(rcs) == 2:
+            return self.als_dual(plan, als1, als2, rcs, ucs, reason)
+        else:
+            raise LogicException(reason)
 
     """
     ALS strategy.
