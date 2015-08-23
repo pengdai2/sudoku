@@ -101,6 +101,8 @@ def process_snap(snap, i, html = True):
             unique_rectangle(r)
         elif s == "ST.ALS":
             als(r)
+        elif s == "ST.DEATH-BLOSSOM":
+            death_blossom(r)
 
         # Action.
         show_action(action)
@@ -301,6 +303,23 @@ def als(reason):
 
     for node in als2:
         highlight_hints(node, hints, "reason_2")
+
+def death_blossom(reason):
+    add_comment("ST.DEATH-BLOSSOM")
+    stem = reason["stem"]
+    petal1 = reason["petal1"]
+    petal2 = reason["petal2"]
+    rcs = reason["rcs"]
+    ucs = reason["ucs"]
+
+    for node in stem:
+        highlight_hints(node, rcs, "reason")
+
+    for node in petal1:
+        highlight_hints(node, rcs, "reason_2")
+
+    for node in petal2:
+        highlight_hints(node, rcs, "reason_2")
 
 def highlight_node(node, type):
     print "board.highlightNodeBorder({0}, Decorator.{1})".format(node_ident(node), type)
